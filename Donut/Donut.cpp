@@ -20,6 +20,20 @@ void setupConsole()
     SetConsoleMode(hConsole, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
 }
 
+class Display
+{
+public:
+    Display(int width, int height)
+    {
+        m_pixels = new char[width * height];
+        m_size   = width * height;
+    }
+
+private:
+    char*  m_pixels ;
+    int    m_size   ;
+};
+
 int main(int argc, char* argv[])
 {
 
@@ -34,9 +48,7 @@ int main(int argc, char* argv[])
     
     std::cout << "Hello world " << std::endl;
 
-
-    while (true)
-    {
-    }
+    printf(CURSOR_SHOW);
+    
     return 0;
 }
