@@ -28,6 +28,15 @@ public:
         m_pixels = new char[width * height];
         m_size   = width * height;
     }
+    ~Display()
+    {
+        delete[] m_pixels;
+    }
+
+    void show()
+    {
+        
+    }
 
 private:
     char*  m_pixels ;
@@ -41,14 +50,7 @@ int main(int argc, char* argv[])
     
     //printf(CURSOR_HIDE);
     
-    std::cout << "Hello world " << std::endl;
-
-    printf(CONSOLE_RESET);
-    printf(CURSOR_HIDE);
-    
-    std::cout << "Hello world " << std::endl;
-
-    printf(CURSOR_SHOW);
+    std::cout << CONSOLE_RESET << CURSOR_HIDE << "Hello world " << CURSOR_SHOW << std::endl;
     
     return 0;
 }
