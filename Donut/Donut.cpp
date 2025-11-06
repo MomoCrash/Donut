@@ -3,6 +3,9 @@
 
 #include <iostream>
 
+#include "Screen.h"
+#include "Settings.h"
+
 #define CONSOLE_CLEAR "\033[2J"
 #define CONSOLE_RESET "\033c"
 #define CONSOLE_BEGIN "\033[H"
@@ -20,52 +23,19 @@ void setupConsole()
     SetConsoleMode(hConsole, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
 }
 
-class Display
-{
-public:
-    Display(int width, int height)
-    {
-        m_pixels    = new char[width * height];
-        m_size      = width * height;
-        m_width     = width;
-        m_height    = height;
-    }
-    ~Display()
-    {
-        delete[] m_pixels;
-    }
-
-    void show()
-    {
-        for (int i = 0; i < m_height; i++)
-        {
-            
-            for (int j = 0; j < m_width; j++)
-            {
-                std::cout << "." ;
-                
-            }
-            std::cout << std::endl;
-        }
-    }
-
-private:
-    char*  m_pixels ;
-    int    m_size   ;
-    int    m_width, m_height ;
-};
-
 int main(int argc, char* argv[])
 {
+
+    Settings settings(argc, argv);
 
     setupConsole();
     
     //printf(CURSOR_HIDE);
     
-    Display dispay(100, 20);
+    Screen dispay(settings.getWidth(), settings.getHeight());
 
     std::cout << CONSOLE_RESET << CURSOR_HIDE << std::endl;
-    dispay.show();
+    dispay.display();
     std::cout << CURSOR_SHOW << std::endl;
     
     return 0;
