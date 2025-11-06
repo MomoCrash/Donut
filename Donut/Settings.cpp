@@ -9,20 +9,20 @@ Settings::Settings(int argc, char* argv[]) : m_width(DEFAULT_WIDTH), m_height(DE
 {
     for (int i = 1; i < argc; i++)
     {
-        if (strcmp(argv[i], "-w") == 0)
+        if (strcmp(argv[i], "-w") == 0 && argc > i+1)
         {
             i++;
             m_width = atoi(argv[i]);
         }
-        if (strcmp(argv[i], "-h") == 0)
+        if (strcmp(argv[i], "-h") == 0 && argc > i+1)
         {
             i++;
             m_height = atoi(argv[i]);
         }
-        if (strcmp(argv[i], "-r") == 0)
+        if (strcmp(argv[i], "-r") == 0 && argc > i+1)
         {
             i++;
-            m_height = atoi(argv[i]);
+            m_resolution = atoi(argv[i]);
         }
     }
 }
@@ -35,4 +35,9 @@ int Settings::getWidth()
 int Settings::getHeight()
 {
     return m_height;
+}
+
+int Settings::getResolution()
+{
+    return m_resolution;
 }

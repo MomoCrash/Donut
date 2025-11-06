@@ -13,5 +13,5 @@ public:
         Vertex(float x, float y, float z);
     };
 
-    Mesh(int width, int height);
+    Mesh(int resolution);
 };

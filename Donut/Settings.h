@@ -8,6 +8,7 @@ public:
 
     int getWidth();
     int getHeight();
+    int getResolution();
 
 private:
     int m_width;

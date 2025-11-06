@@ -13,7 +13,15 @@ Screen::Screen(int width, int height)
     m_size      = width * height;
     m_width     = width;
     m_height    = height;
+
+    
 }
+
+Screen::~Screen()
+{
+    delete[] m_pixels;
+}
+
 void Screen::display()
 {
     for (int i = 0; i < m_height; i++)
@@ -26,4 +34,13 @@ void Screen::display()
         }
         std::cout << std::endl;
     }
+}
+
+void Screen::setupConsole()
+{
+    HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); 
+    DWORD mode; 
+    GetConsoleMode(hConsole, &mode); 
+    SetConsoleMode(hConsole, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
 }

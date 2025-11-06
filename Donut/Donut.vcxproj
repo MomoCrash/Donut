@@ -156,11 +156,12 @@
   <ItemGroup>
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Screen.cpp" />
-    <ClCompile Include="Donut.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="Settings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.h" />
+    <ClInclude Include="framework.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Settings.h" />
