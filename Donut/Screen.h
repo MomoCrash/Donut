@@ -7,7 +7,8 @@ class Screen
 public:
     Screen(int width, int height);
     ~Screen();
-    
+
+    void initialize();
     void display();
 
 private:

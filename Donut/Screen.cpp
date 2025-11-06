@@ -14,7 +14,8 @@ Screen::Screen(int width, int height)
     m_width     = width;
     m_height    = height;
 
-    
+    setupConsole();
+    initialize();
 }
 
 Screen::~Screen()
@@ -22,17 +23,22 @@ Screen::~Screen()
     delete[] m_pixels;
 }
 
+void Screen::initialize()
+{
+    for (int i = 0; i < m_size; ++i)
+    {
+        m_pixels[i] = '.';
+    }
+}
+
 void Screen::display()
 {
-    for (int i = 0; i < m_height; i++)
+    for (int i = 1; i < m_size+1; ++i)
     {
-            
-        for (int j = 0; j < m_width; j++)
-        {
-            std::cout << "." ;
-                
-        }
-        std::cout << std::endl;
+        std::cout << m_pixels[i-1];
+
+        if (i % m_width == 0)
+            std::cout << std::endl;
     }
 }
 
@@ -43,4 +49,7 @@ void Screen::setupConsole()
     DWORD mode; 
     GetConsoleMode(hConsole, &mode); 
     SetConsoleMode(hConsole, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+
+    std::cout << CONSOLE_RESET << CURSOR_HIDE << std::endl;
+    std::cout << CURSOR_SHOW << std::endl;
 }
