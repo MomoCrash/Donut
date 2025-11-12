@@ -1,4 +1,5 @@
 #pragma once
+#include "defines.h"
 
 class Settings
 {
@@ -11,8 +12,8 @@ public:
     int getResolution();
 
 private:
-    int m_width;
-    int m_height;
+    int m_width         = DEFAULT_WIDTH;
+    int m_height        = DEFAULT_HEIGHT;
     
-    int m_resolution;
+    int m_resolution    = DEFAULT_RESOLUTION;
 };
