@@ -5,6 +5,8 @@
 
 #define DEFAULT_RESOLUTION      32
 
+#define PI 3.14159265359f
+
 #define CONSOLE_CLEAR           "\033[2J"
 #define CONSOLE_RESET           "\033c"
 #define CONSOLE_BEGIN           "\033[H"

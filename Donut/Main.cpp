@@ -7,13 +7,10 @@ int main(int argc, char* argv[])
     Settings settings(argc, argv);
 
     Mesh mesh(settings.getResolution());
-    mesh.AddVertex({-1, -1, 0});
-    mesh.AddVertex({-1, 1, 0});
-    mesh.AddVertex({1, -1, 0});
-    mesh.AddVertex({1, 1, 0});
-
+    mesh.GenerateSquare(2);
     
     Screen screen(settings.getWidth(), settings.getHeight());
+    screen.display(mesh);
     screen.display();
     
     mesh.Debug();

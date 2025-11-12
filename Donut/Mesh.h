@@ -20,7 +20,13 @@ public:
 
     void AddVertex(float x, float y, float z);
     void AddVertex(Vertex v);
+    std::vector<Vertex> const& GetVertices();
     void Debug();
+
+    void GenerateCircle     (float radius);
+    void GenerateHalfCircle (float radius);
+    void GenerateRectangle  (float width, float height);
+    void GenerateSquare     (float size);
 
 private:
     std::vector<Vertex> m_vertices;

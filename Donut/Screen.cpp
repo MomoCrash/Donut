@@ -1,6 +1,7 @@
 #include "Screen.h"
 
 #include "defines.h"
+#include "Mesh.h"
 
 Screen::Screen(int width, int height)
 {
@@ -31,13 +32,22 @@ void Screen::initialize()
     }
 }
 
+void Screen::display(Mesh& mesh)
+{
+    for (auto vertex : mesh.GetVertices())
+    {
+        int index = m_width * vertex.y + vertex.x;
+        m_pixels[index] = 'x';
+    }
+}
+
 void Screen::display()
 {
-    for (int i = 1; i < m_size+1; ++i)
+    for (int i = 0; i < m_size; ++i)
     {
-        std::cout << m_pixels[i-1];
+        std::cout << m_pixels[i];
 
-        if (i % m_width == 0)
+        if ((i+1) % m_width == 0)
             std::cout << std::endl;
     }
 }

@@ -2,14 +2,17 @@
 
 #include "framework.h"
 
+class Mesh;
+
 class Screen
 {
 public:
     Screen(int width, int height);
     ~Screen();
 
-    void initialize();
+    void display(Mesh& mesh);
     void display();
+    void initialize();
 
 private:
     void setupConsole();
