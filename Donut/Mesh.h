@@ -1,6 +1,9 @@
 #pragma once
 #include <vector>
 
+#include "defines.h"
+#include "Settings.h"
+
 
 class Mesh
 {
@@ -16,14 +19,14 @@ public:
         void Debug();
     };
 
-    Mesh(int resolution);
+    Mesh(Settings& settings);
 
     void AddVertex(float x, float y, float z);
     void AddVertex(Vertex v);
-    std::vector<Vertex> const& GetVertices();
+    std::vector<Vertex> const& GetVertices() const;
     void Debug();
 
-    void GenerateCircle     (float radius);
+    void GenerateCircle     (float radius, float angle=2*PI);
     void GenerateHalfCircle (float radius);
     void GenerateRectangle  (float width, float height);
     void GenerateSquare     (float size);

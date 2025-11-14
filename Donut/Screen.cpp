@@ -10,10 +10,28 @@ Screen::Screen(int width, int height)
         width   = DEFAULT_WIDTH;
         height  = DEFAULT_HEIGHT;
     }
-    m_pixels    = new char[width * height];
     m_size      = width * height;
+    m_pixels    = new char[m_size];
     m_width     = width;
     m_height    = height;
+
+    setupConsole();
+    initialize();
+}
+
+Screen::Screen(Settings& settings)
+{
+    m_width     = settings.getWidth();
+    m_height    = settings.getHeight();
+
+    if (m_width <= 0 || m_height <= 0) {
+        std::cout << "Invalid width/height using default" << std::endl;
+        m_width   = DEFAULT_WIDTH;
+        m_height  = DEFAULT_HEIGHT;
+    }
+
+    m_size      = m_width * m_height;
+    m_pixels    = new char[m_size];
 
     setupConsole();
     initialize();
@@ -32,11 +50,17 @@ void Screen::initialize()
     }
 }
 
-void Screen::display(Mesh& mesh)
+void Screen::setPosition(int x, int y)
 {
-    for (auto vertex : mesh.GetVertices())
+    m_positionX = x;
+    m_positionY = y;
+}
+
+void Screen::display(Mesh const& mesh)
+{
+    for (auto const& vertex : mesh.GetVertices())
     {
-        int index = m_width * vertex.y + vertex.x;
+        int index = (float)m_width * (float)vertex.y +(float) vertex.x;
         m_pixels[index] = 'x';
     }
 }

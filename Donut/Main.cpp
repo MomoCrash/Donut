@@ -6,14 +6,16 @@ int main(int argc, char* argv[])
 {
     Settings settings(argc, argv);
 
-    Mesh mesh(settings.getResolution());
-    mesh.GenerateSquare(2);
+    Mesh mesh(settings);
+    mesh.GenerateRectangle(4, 3);
     
-    Screen screen(settings.getWidth(), settings.getHeight());
+    Screen screen(settings);
     screen.display(mesh);
     screen.display();
     
     mesh.Debug();
+
+    while (true){}
     
     return 0;
 }

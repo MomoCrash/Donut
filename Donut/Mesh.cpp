@@ -11,7 +11,7 @@ void Mesh::Vertex::Debug()
     std::cout << "x:" << x << ", y:" << y << ", z:" << z << std::endl;
 }
 
-Mesh::Mesh(int resolution) : m_resolution(resolution)
+Mesh::Mesh(Settings& settings) : m_resolution(settings.getResolution())
 {
 }
 
@@ -25,7 +25,7 @@ void Mesh::AddVertex(Vertex v)
     m_vertices.emplace_back(v);
 }
 
-std::vector<Mesh::Vertex> const& Mesh::GetVertices()
+std::vector<Mesh::Vertex> const& Mesh::GetVertices() const
 {
     return m_vertices;
 }
@@ -38,16 +38,16 @@ void Mesh::Debug()
     }
 }
 
-void Mesh::GenerateCircle(float radius)
+void Mesh::GenerateCircle(float radius, float angle)
 {
-    float angle     = 360.0f/(float)m_resolution;
-    for (float i = 0; i <= 360; i += angle)
+    for (float i = 0; i < m_resolution; i++)
     {
+        float r = (radius * i)/((float)m_resolution-1);
         for (int j = 0; j < m_resolution; j++)
         {
-            float distance = (float)j * radius / (float)m_resolution;
-            float x = distance*cos(i * PI /180);
-            float y = distance*sin(i * PI /180);
+            float theta = (float)j * angle / ((float)m_resolution - 1);
+            float x = r*cos(theta);
+            float y = r*sin(theta);
             AddVertex(x, y, 0);
         }
     }
@@ -56,30 +56,18 @@ void Mesh::GenerateCircle(float radius)
 
 void Mesh::GenerateHalfCircle(float radius)
 {
-    float angle     = 360.0f/(float)m_resolution;
-    for (float i = 0; i <= 180; i += angle)
-    {
-        for (int j = 0; j < m_resolution; j++)
-        {
-            float distance = (float)j * radius / (float)m_resolution;
-            float x = distance*cos(i * PI /180);
-            float y = distance*sin(i * PI /180);
-            AddVertex(x, y, 0);
-        }
-    }
+    GenerateCircle(radius, PI);
     
 }
 
 void Mesh::GenerateRectangle(float width, float height)
 {
-    for (int i = 0; i <= width; i++)
+    for (int i = 0; i < m_resolution; i++)
     {
-        if (0 > i && i > m_resolution)  return;
-        for (int j = 0; j <= height; j++)
+        for (int j = 0; j < m_resolution; j++)
         {
-            if (0 > j && j > m_resolution)  return;
-            float x = 2*(float)i/((float)m_resolution-1)-1;
-            float y = 2*(float)j/((float)m_resolution-1)-1;
+            float x = width*(float)i/((float)m_resolution-1);
+            float y = height*(float)j/((float)m_resolution-1);
             m_vertices.emplace_back(x, y, 0);
         }
     }
@@ -87,15 +75,5 @@ void Mesh::GenerateRectangle(float width, float height)
 
 void Mesh::GenerateSquare(float size)
 {
-    for (int i = 0; i <= size; i++)
-    {
-        if (0 > i && i > m_resolution)  return;
-        for (int j = 0; j <= size; j++)
-        {
-            if (0 > j && j > m_resolution)  return;
-            float x = 2*(float)i/((float)m_resolution-1)-1;
-            float y = 2*(float)j/((float)m_resolution-1)-1;
-            m_vertices.emplace_back(x, y, 0);
-        }
-    }
+    GenerateRectangle(size, size);
 }
