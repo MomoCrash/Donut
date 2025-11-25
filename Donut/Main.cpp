@@ -7,13 +7,11 @@ int main(int argc, char* argv[])
     Settings settings(argc, argv);
 
     Mesh mesh(settings);
-    mesh.GenerateRectangle(4, 3);
+    mesh.GenerateHalfCircle(10);
     
     Screen screen(settings);
     screen.display(mesh);
     screen.display();
-    
-    mesh.Debug();
 
     while (true){}
     

@@ -3,6 +3,8 @@
 #include "defines.h"
 #include "Mesh.h"
 
+#include "math.h"
+
 Screen::Screen(int width, int height)
 {
     if (width <= 0 || height <= 0) {
@@ -12,6 +14,7 @@ Screen::Screen(int width, int height)
     }
     m_size      = width * height;
     m_pixels    = new char[m_size];
+    m_oozBuffer = new float[m_size];
     m_width     = width;
     m_height    = height;
 
@@ -38,6 +41,10 @@ Screen::Screen(Settings& settings)
     
     m_size      = m_width * m_height;
     m_pixels    = new char[m_size];
+    m_oozBuffer = new float[m_size];
+
+    m_positionX = m_width / 2;
+    m_positionY = m_height / 2;
 
     setupConsole();
     initialize();
@@ -53,6 +60,7 @@ void Screen::initialize()
     for (int i = 0; i < m_size; ++i)
     {
         m_pixels[i] = m_backgroundChar;
+        m_oozBuffer[i] = -FLT_MAX;
     }
 }
 
@@ -65,18 +73,31 @@ void Screen::setPosition(int x, int y)
 void Screen::display(Mesh const& mesh)
 {
 
-    float meshPositonZ      = 10;
-    float viewPositionZ     = 15;
+    float meshPositonZ      = 5;
+    float viewPositionZ     = 3.33f;
 
     for (Mesh::Vertex vertex : mesh.GetVertices())
     {
+
+
         float y_prime = (vertex.y  * viewPositionZ) / meshPositonZ;
         float x_prime = (vertex.x  * viewPositionZ) / meshPositonZ;
 
-        int index = static_cast<int>(static_cast<float>(m_width) * (y_prime + m_positionY) + (x_prime + m_positionX));
+        x_prime += m_positionX;
+        y_prime += m_positionY;
 
+        int u = round(x_prime);
+        int v = round(y_prime);
+
+        int index = m_width * v + u;
+
+        float ooz = 1.f / vertex.z;
+
+        if (ooz < m_oozBuffer[index]) continue;
         if (index < 0 || index >= m_size) continue;
+
         m_pixels[index] = m_meshChar;
+        m_oozBuffer[index] = ooz;
     }
     
 }

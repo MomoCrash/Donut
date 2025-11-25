@@ -22,6 +22,7 @@ private:
     void setupConsole();
     
     char*  m_pixels ;
+    float* m_oozBuffer ;
     int    m_size   ;
     int    m_width, m_height ;
     int    m_positionX, m_positionY ;
