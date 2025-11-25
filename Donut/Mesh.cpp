@@ -40,15 +40,17 @@ void Mesh::Debug()
 
 void Mesh::GenerateCircle(float radius, float angle)
 {
-    for (float i = 0; i < m_resolution; i++)
+    
+    m_vertices.resize(m_resolution * m_resolution);
+    for(int i = 0; i < m_resolution; i++)
     {
-        float r = (radius * i)/((float)m_resolution-1);
-        for (int j = 0; j < m_resolution; j++)
+        float r = (radius * i) / (m_resolution - 1);
+        for(int j = 0; j < m_resolution; j++)
         {
-            float theta = (float)j * angle / ((float)m_resolution - 1);
-            float x = r*cos(theta);
-            float y = r*sin(theta);
-            AddVertex(x, y, 0);
+            float theta = (angle * j) / (m_resolution - 1);
+            m_vertices[m_resolution * i + j].x = r * std::cos(theta);
+            m_vertices[m_resolution * i + j].y = r * std::sin(theta);
+            m_vertices[m_resolution * i + j].z = 0.f;
         }
     }
     
@@ -62,13 +64,14 @@ void Mesh::GenerateHalfCircle(float radius)
 
 void Mesh::GenerateRectangle(float width, float height)
 {
-    for (int i = 0; i < m_resolution; i++)
+    m_vertices.resize(m_resolution * m_resolution);
+    for(int i = 0; i < m_resolution; i++)
     {
-        for (int j = 0; j < m_resolution; j++)
+        for(int j = 0; j < m_resolution; j++)
         {
-            float x = width*(float)i/((float)m_resolution-1);
-            float y = height*(float)j/((float)m_resolution-1);
-            m_vertices.emplace_back(x, y, 0);
+            m_vertices[m_resolution * i + j].x = (1.f*i / (m_resolution - 1) - 0.5f) * width;
+            m_vertices[m_resolution * i + j].y = (1.f*j / (m_resolution - 1) - 0.5f) * height;
+            m_vertices[m_resolution * i + j].z = 0.f;
         }
     }
 }

@@ -15,6 +15,9 @@ Screen::Screen(int width, int height)
     m_width     = width;
     m_height    = height;
 
+    m_backgroundChar = '.';
+    m_meshChar = 'x';
+
     setupConsole();
     initialize();
 }
@@ -30,6 +33,9 @@ Screen::Screen(Settings& settings)
         m_height  = DEFAULT_HEIGHT;
     }
 
+    m_backgroundChar = settings.getScreenBackground();
+    m_meshChar = settings.getScreenMeshProjection();
+    
     m_size      = m_width * m_height;
     m_pixels    = new char[m_size];
 
@@ -46,7 +52,7 @@ void Screen::initialize()
 {
     for (int i = 0; i < m_size; ++i)
     {
-        m_pixels[i] = '.';
+        m_pixels[i] = m_backgroundChar;
     }
 }
 
@@ -58,11 +64,21 @@ void Screen::setPosition(int x, int y)
 
 void Screen::display(Mesh const& mesh)
 {
-    for (auto const& vertex : mesh.GetVertices())
+
+    float meshPositonZ      = 10;
+    float viewPositionZ     = 15;
+
+    for (Mesh::Vertex vertex : mesh.GetVertices())
     {
-        int index = (float)m_width * (float)vertex.y +(float) vertex.x;
-        m_pixels[index] = 'x';
+        float y_prime = (vertex.y  * viewPositionZ) / meshPositonZ;
+        float x_prime = (vertex.x  * viewPositionZ) / meshPositonZ;
+
+        int index = static_cast<int>(static_cast<float>(m_width) * (y_prime + m_positionY) + (x_prime + m_positionX));
+
+        if (index < 0 || index >= m_size) continue;
+        m_pixels[index] = m_meshChar;
     }
+    
 }
 
 void Screen::display()

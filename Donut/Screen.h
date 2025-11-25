@@ -25,4 +25,7 @@ private:
     int    m_size   ;
     int    m_width, m_height ;
     int    m_positionX, m_positionY ;
+
+    char m_backgroundChar;
+    char m_meshChar;
 };
