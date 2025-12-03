@@ -12,8 +12,6 @@ int main(int argc, char* argv[])
     Screen screen(settings);
     screen.display(mesh);
     screen.display();
-    
-    mesh.Debug();
 
     while (true){}
     
