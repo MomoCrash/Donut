@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
     Settings settings(argc, argv);
 
     Mesh mesh(settings);
-    mesh.GenerateRectangle(4, 3);
+    mesh.GenerateTorus(5, 2);
     
     Screen screen(settings);
     screen.display(mesh);

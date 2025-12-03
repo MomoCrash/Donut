@@ -6,6 +6,32 @@
 
 Mesh::Vertex::Vertex(float x, float y, float z) : x(x), y(y), z(z){}
 
+void Mesh::Vertex::Rotate(float angle, Axis axis)
+{
+    switch (axis)
+    {
+        case Axis::X:
+            {
+                y = cos(angle) * y - sin(angle) * z;
+                z = sin(angle) * y + cos(angle) * z;
+                break;
+            }
+        case Axis::Y:
+            {
+                x = cos(angle) * x - sin(angle) * z;
+                z = sin(angle) * x + 0 * y + cos(angle) * z;
+                break;
+            }
+        case Axis::Z:
+            {
+                x = cos(angle) * x + sin(angle) * y;
+                y = -sin(angle) * x + cos(angle) * y;
+            }
+        
+            
+    }
+}
+
 void Mesh::Vertex::Debug()
 {
     std::cout << "x:" << x << ", y:" << y << ", z:" << z << std::endl;
@@ -28,6 +54,14 @@ void Mesh::AddVertex(Vertex v)
 std::vector<Mesh::Vertex> const& Mesh::GetVertices() const
 {
     return m_vertices;
+}
+
+void Mesh::Rotate(float angle, Axis axis)
+{
+    for (int i = 0; i < m_vertices.size(); i++)
+    {
+        m_vertices[i].Rotate(angle, axis);
+    }  
 }
 
 void Mesh::Debug()
@@ -76,4 +110,20 @@ void Mesh::GenerateRectangle(float width, float height)
 void Mesh::GenerateSquare(float size)
 {
     GenerateRectangle(size, size);
+}
+
+void Mesh::GenerateTorus(float innerRadius, float radius)
+{
+    for (float i = 0; i < m_resolution; i++)
+    {
+        float r = (radius * i)/((float)m_resolution-1);
+        for (int j = 0; j < m_resolution; j++)
+        {
+            float theta = (float)j * 2*PI / ((float)m_resolution - 1);
+            float x = innerRadius + r*cos(theta);
+            float y = r*sin(theta);
+            float z = 0;
+            AddVertex(x, y, z);
+        }
+    }
 }
