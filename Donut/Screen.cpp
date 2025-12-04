@@ -78,12 +78,13 @@ void Screen::display(Mesh const& mesh)
 
     for (Mesh::Vertex vertex : mesh.GetVertices())
     {
-
-
+        
         float y_prime = (vertex.y  * viewPositionZ) / meshPositonZ;
         float x_prime = (vertex.x  * viewPositionZ) / meshPositonZ;
 
-        x_prime += m_positionX;
+        y_prime /= 2.0f;
+
+        x_prime += m_positionX ;
         y_prime += m_positionY;
 
         int u = round(x_prime);

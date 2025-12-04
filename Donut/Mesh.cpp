@@ -8,24 +8,34 @@ Mesh::Vertex::Vertex(float x, float y, float z) : x(x), y(y), z(z){}
 
 void Mesh::Vertex::Rotate(float angle, Axis axis)
 {
+
+    float _cos = cos(angle);
+    float _sin = sin(angle);
+
     switch (axis)
     {
         case Axis::X:
             {
-                y = cos(angle) * y - sin(angle) * z;
-                z = sin(angle) * y + cos(angle) * z;
+                float _y = _cos * y - _sin * z;
+                float _z = _sin * y + _cos * z;
+                y = _y;
+                z = _z;
                 break;
             }
         case Axis::Y:
             {
-                x = cos(angle) * x - sin(angle) * z;
-                z = sin(angle) * x + 0 * y + cos(angle) * z;
+                float _x = _cos * x - _sin * z;
+                float _z = _sin * x + _cos * z;
+                x = _x;
+                z = _z;
                 break;
             }
         case Axis::Z:
             {
-                x = cos(angle) * x + sin(angle) * y;
-                y = -sin(angle) * x + cos(angle) * y;
+                float _x =  _cos * x + _sin * y;
+                float _y = -_sin * x + _cos * y;
+                x = _x;
+                y = _y;
             }
         
             
@@ -115,18 +125,21 @@ void Mesh::GenerateSquare(float size)
     GenerateRectangle(size, size);
 }
 
-void Mesh::GenerateTorus(float innerRadius, float radius)
+void Mesh::GenerateTorus(float majorRadius, float minorRadius)
 {
     for (float i = 0; i < m_resolution; i++)
     {
-        float r = (radius * i)/((float)m_resolution-1);
+        float majorR = (2.f*PI * i)/((float)m_resolution-1);
         for (int j = 0; j < m_resolution; j++)
         {
-            float theta = (float)j * 2*PI / ((float)m_resolution - 1);
-            float x = innerRadius + r*cos(theta);
-            float y = r*sin(theta);
-            float z = 0;
-            AddVertex(x, y, z);
+            float minorR = (2.f*PI * j) / ((float)m_resolution - 1);
+            for (int k = 0; k < m_resolution; k++)
+            {
+                float x = (majorRadius + minorRadius * cos(minorR)) * cos(majorR);
+                float y = (majorRadius + minorRadius * cos(minorR)) * cos(majorR);
+                float z = minorR * sin(minorR);
+                AddVertex(x, y, z);
+            }
         }
     }
 }

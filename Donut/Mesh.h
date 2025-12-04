@@ -42,7 +42,7 @@ public:
     void GenerateHalfCircle (float radius);
     void GenerateRectangle  (float width, float height);
     void GenerateSquare     (float size);
-    void GenerateTorus      (float innerRadius, float radius);
+    void GenerateTorus      (float majorRadius, float minorRadius);
 
 private:
     std::vector<Vertex> m_vertices;
