@@ -132,11 +132,11 @@ void Mesh::GenerateTorus(float majorRadius, float minorRadius)
         float majorR = (2.f*PI * i)/((float)m_resolution-1);
         for (int j = 0; j < m_resolution; j++)
         {
-            float minorR = (2.f*PI * j) / ((float)m_resolution - 1);
+            float minorR = PI - (2.0f*PI * j) / ((float)m_resolution - 1);
             for (int k = 0; k < m_resolution; k++)
             {
                 float x = (majorRadius + minorRadius * cos(minorR)) * cos(majorR);
-                float y = (majorRadius + minorRadius * cos(minorR)) * cos(majorR);
+                float y = (majorRadius + minorRadius * sin(minorR)) * sin(majorR);
                 float z = minorR * sin(minorR);
                 AddVertex(x, y, z);
             }
