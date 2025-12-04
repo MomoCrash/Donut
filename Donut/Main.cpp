@@ -7,8 +7,7 @@ int main(int argc, char* argv[])
     Settings settings(argc, argv);
 
     Mesh mesh(settings);
-    mesh.GenerateTorus(15, 10);
-    // mesh.Rotate(1.5708f, Mesh::Axis::X);
+    mesh.GenerateTorus(15, 5);
     
     Screen screen(settings);
     screen.display(mesh);
