@@ -14,6 +14,7 @@ public:
 
     void display(Mesh const& mesh);
     void display();
+    void clear();
     void initialize();
     
     void setPosition(int x, int y);

@@ -3,7 +3,7 @@
 #define DEFAULT_WIDTH           100
 #define DEFAULT_HEIGHT          20
 
-#define DEFAULT_RESOLUTION      128
+#define DEFAULT_RESOLUTION      64
 
 #define PI 3.14159265359f
 

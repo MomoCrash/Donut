@@ -114,6 +114,16 @@ void Screen::display()
     }
 }
 
+void Screen::clear()
+{
+    std::cout << CONSOLE_BEGIN;
+    for (int i = 0; i < m_size; ++i)
+    {
+        m_pixels[i]     = m_backgroundChar;
+        m_oozBuffer[i]  = -FLT_MAX;
+    }
+}
+
 void Screen::setupConsole()
 {
     HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -123,5 +133,4 @@ void Screen::setupConsole()
     SetConsoleMode(hConsole, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
 
     std::cout << CONSOLE_RESET << CURSOR_HIDE << std::endl;
-    std::cout << CURSOR_SHOW << std::endl;
 }

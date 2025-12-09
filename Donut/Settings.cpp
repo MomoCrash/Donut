@@ -39,6 +39,26 @@ Settings::Settings(int argc, char* argv[]) : m_width(DEFAULT_WIDTH), m_height(DE
             i++;
             m_screenPosition = atoi(argv[i]);
         }
+        if (strcmp(argv[i], "-x") == 0 && argc > i+1)
+        {
+            i++;
+            m_meshRotationXPerFrame = atof(argv[i]);
+        }
+        if (strcmp(argv[i], "-y") == 0 && argc > i+1)
+        {
+            i++;
+            m_meshRotationYPerFrame = atof(argv[i]);
+        }
+        if (strcmp(argv[i], "-z") == 0 && argc > i+1)
+        {
+            i++;
+            m_meshRotationZPerFrame = atof(argv[i]);
+        }
+        if (strcmp(argv[i], "-f") == 0 && argc > i+1)
+        {
+            i++;
+            m_frameDuration = atoi(argv[i]);
+        }
     }
 }
 
@@ -70,4 +90,24 @@ char Settings::getScreenMeshProjection() const
 float Settings::getScreenPosition() const
 {
     return m_screenPosition;
+}
+
+float Settings::getMeshRotationXPerFrame() const
+{
+    return m_meshRotationXPerFrame;
+}
+
+float Settings::getMeshRotationYPerFrame() const
+{
+    return m_meshRotationYPerFrame;
+}
+
+float Settings::getMeshRotationZPerFrame() const
+{
+    return m_meshRotationZPerFrame;
+}
+
+int Settings::getFrameDuration() const
+{
+    return m_frameDuration / 1000;
 }
