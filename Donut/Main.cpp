@@ -42,6 +42,7 @@ int main(int argc, char* argv[])
     }
     
     printf(CONSOLE_CLEAR);
+    printf(CONSOLE_BEGIN);
     
     return EXIT_SUCCESS;
 }
