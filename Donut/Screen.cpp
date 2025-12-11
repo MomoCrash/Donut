@@ -43,8 +43,8 @@ Screen::Screen(Settings& settings)
     m_pixels    = new char[m_size];
     m_oozBuffer = new float[m_size];
 
-    m_positionX = m_width / 2;
-    m_positionY = m_height / 2;
+    m_positionX = settings.getScreenPosition();
+    m_positionY = settings.getScreenPosition()/2;
 
     setupConsole();
     initialize();
@@ -73,8 +73,11 @@ void Screen::setPosition(int x, int y)
 void Screen::display(Mesh const& mesh)
 {
 
-    float meshPositonZ      = 5;
+    float meshPositonZ      = 2;
     float viewPositionZ     = 3.33f;
+
+    float cosA = cos(mesh.getRotation()[0]), sinA = sin(mesh.getRotation()[0]);
+    float cosB = cos(mesh.getRotation()[2]), sinB = sin(mesh.getRotation()[2]);
 
     for (Mesh::Vertex vertex : mesh.GetVertices())
     {
@@ -82,22 +85,31 @@ void Screen::display(Mesh const& mesh)
         float y_prime = (vertex.y  * viewPositionZ) / meshPositonZ;
         float x_prime = (vertex.x  * viewPositionZ) / meshPositonZ;
 
-        y_prime /= 2.0f;
-
         x_prime += m_positionX ;
         y_prime += m_positionY;
+
+        y_prime /= 2.f;
 
         int u = round(x_prime);
         int v = round(y_prime);
 
+        if (u < 0 || v < 0 || u >= m_width || v >= m_height) continue;
+
         int index = m_width * v + u;
 
-        float ooz = 1.f / vertex.z;
+        float L = vertex.cosphi*vertex.costheta*sinB - cosA*vertex.costheta*vertex.sinphi -
+sinA*vertex.sintheta + cosB*(cosA*vertex.sintheta - vertex.costheta*sinA*vertex.sinphi);
+        
+        if (L <= 0) continue;
 
+        float ooz = 1.f / vertex.z;
+        
         if (ooz < m_oozBuffer[index]) continue;
         if (index < 0 || index >= m_size) continue;
 
-        m_pixels[index] = m_meshChar;
+        int luminance_index = static_cast<int>(L * 8.f);
+
+        m_pixels[index] = ".,-~:;=!*#$@"[luminance_index];
         m_oozBuffer[index] = ooz;
     }
     

@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
     Settings settings(argc, argv);
     
     Mesh mesh(settings);
-    mesh.GenerateTorus(15, 5);
+    mesh.GenerateTorus(10, 2);
     
     Screen screen(settings);
 

@@ -25,7 +25,7 @@ private:
     int     m_height                    = DEFAULT_HEIGHT;
     
     int     m_resolution                = DEFAULT_RESOLUTION;
-    char    m_screenBackground          = '.';
+    char    m_screenBackground          = ' ';
     char    m_screenMeshProjection      = 'X';
     float   m_screenPosition            = 10;
     float   m_meshRotationXPerFrame     = 0.02f;

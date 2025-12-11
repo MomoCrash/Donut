@@ -22,8 +22,13 @@ public:
         float x = 0;
         float y = 0;
         float z = 0;
+        
+        float sinphi = 0;
+        float cosphi = 0;
+        float sintheta = 0;
+        float costheta = 0;
         Vertex() = default;
-        Vertex(float x, float y, float z);
+        Vertex(float x, float y, float z, float sinphi, float cosphi, float sintheta, float costheta);
 
         void Rotate(float angle, Axis axis);
         void Debug();
@@ -31,7 +36,7 @@ public:
 
     Mesh(Settings& settings);
 
-    void AddVertex(float x, float y, float z);
+    void AddVertex(float x, float y, float z, float sinphi, float cosphi, float sintheta, float costheta);
     void AddVertex(Vertex v);
     std::vector<Vertex> const& GetVertices() const;
 
@@ -44,8 +49,11 @@ public:
     void GenerateSquare     (float size);
     void GenerateTorus      (float majorRadius, float minorRadius);
 
+    float const* getRotation() const;
+
 private:
     std::vector<Vertex> m_vertices;
+    float m_rotation[3];
     int m_resolution;
 
 };

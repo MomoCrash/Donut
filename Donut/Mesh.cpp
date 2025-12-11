@@ -4,7 +4,10 @@
 
 #include "defines.h"
 
-Mesh::Vertex::Vertex(float x, float y, float z) : x(x), y(y), z(z){}
+Mesh::Vertex::Vertex(float x, float y, float z, float sinphi, float cosphi, float sintheta, float costheta) :
+x(x), y(y), z(z), sinphi(sinphi), cosphi(cosphi), sintheta(sintheta), costheta(costheta)
+{
+}
 
 void Mesh::Vertex::Rotate(float angle, Axis axis)
 {
@@ -47,13 +50,13 @@ void Mesh::Vertex::Debug()
     std::cout << "x:" << x << ", y:" << y << ", z:" << z << std::endl;
 }
 
-Mesh::Mesh(Settings& settings) : m_resolution(settings.getResolution())
+Mesh::Mesh(Settings& settings) : m_rotation{0.0f, 0.0f, 0.0f}, m_resolution(settings.getResolution())
 {
 }
 
-void Mesh::AddVertex(float x, float y, float z)
+void Mesh::AddVertex(float x, float y, float z, float sinphi, float cosphi, float sintheta, float costheta)
 {
-    m_vertices.emplace_back(x, y, z);
+    m_vertices.emplace_back(x, y, z, sinphi, cosphi, sintheta, costheta);
 }
 
 void Mesh::AddVertex(Vertex v)
@@ -71,7 +74,26 @@ void Mesh::Rotate(float angle, Axis axis)
     for (int i = 0; i < m_vertices.size(); i++)
     {
         m_vertices[i].Rotate(angle, axis);
-    }  
+    }
+
+    switch (axis)
+    {
+    case Axis::X:
+        {
+            m_rotation[0] += angle;
+            break;
+        }
+    case Axis::Y:
+        {
+            m_rotation[1] += angle;
+            break;
+        }
+    case Axis::Z:
+        {
+            m_rotation[2] += angle;
+            break;
+        }
+    }
 }
 
 void Mesh::Debug()
@@ -127,19 +149,32 @@ void Mesh::GenerateSquare(float size)
 
 void Mesh::GenerateTorus(float majorRadius, float minorRadius)
 {
+    
     for (float i = 0; i < m_resolution; i++)
     {
         float majorR = (2.f*PI * i)/((float)m_resolution-1);
+        float costheta = cos(majorR), sintheta = sin(majorR);
+        
         for (int j = 0; j < m_resolution; j++)
         {
             float minorR = PI - (2.0f*PI * j) / ((float)m_resolution - 1);
+            float cosphi = cos(minorR), sinphi = sin(minorR);
+            
             for (int k = 0; k < m_resolution; k++)
             {
+                
                 float x = (majorRadius + minorRadius * cos(minorR)) * cos(majorR);
                 float y = (majorRadius + minorRadius * sin(minorR)) * sin(majorR);
                 float z = minorR * sin(minorR);
-                AddVertex(x, y, z);
+                AddVertex(x, y, z, sinphi, cosphi, sintheta, costheta);
+
+                
             }
         }
     }
+}
+
+float const* Mesh::getRotation() const
+{
+    return m_rotation;
 }
