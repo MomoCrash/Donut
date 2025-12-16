@@ -3,6 +3,7 @@
 #include "framework.h"
 #include "Settings.h"
 
+class Light;
 class Mesh;
 
 class Screen
@@ -12,7 +13,7 @@ public:
     Screen(Settings& settings);
     ~Screen();
 
-    void display(Mesh const& mesh);
+    void display(Mesh const& mesh, Light const& light);
     void display();
     void clear();
     void initialize();

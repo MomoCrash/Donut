@@ -5,6 +5,8 @@
 #include "Settings.h"
 
 
+class Light;
+
 class Mesh
 {
 public:
@@ -19,24 +21,25 @@ public:
     
     struct Vertex
     {
-        float x = 0;
-        float y = 0;
-        float z = 0;
+        float x     = 0;
+        float y     = 0;
+        float z     = 0;
         
-        float sinphi = 0;
-        float cosphi = 0;
-        float sintheta = 0;
-        float costheta = 0;
+        float nx    = 0;
+        float ny    = 0;
+        float nz    = 0;
+        
         Vertex() = default;
-        Vertex(float x, float y, float z, float sinphi, float cosphi, float sintheta, float costheta);
+        Vertex(float x, float y, float z, float nx, float ny, float nz);
 
         void Rotate(float angle, Axis axis);
+        float ComputeIllumination(Light const& light);
         void Debug();
     };
 
     Mesh(Settings& settings);
 
-    void AddVertex(float x, float y, float z, float sinphi, float cosphi, float sintheta, float costheta);
+    void AddVertex(float x, float y, float z, float nx, float ny, float nz);
     void AddVertex(Vertex v);
     std::vector<Vertex> const& GetVertices() const;
 

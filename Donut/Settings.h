@@ -27,7 +27,7 @@ private:
     int     m_resolution                = DEFAULT_RESOLUTION;
     char    m_screenBackground          = ' ';
     char    m_screenMeshProjection      = 'X';
-    float   m_screenPosition            = 10;
+    float   m_screenPosition            = 50;
     float   m_meshRotationXPerFrame     = 0.02f;
     float   m_meshRotationYPerFrame     = 0.04f;
     float   m_meshRotationZPerFrame     = 0.00f;

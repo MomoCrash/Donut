@@ -3,9 +3,10 @@
 #include <iostream>
 
 #include "defines.h"
+#include "Light.h"
 
-Mesh::Vertex::Vertex(float x, float y, float z, float sinphi, float cosphi, float sintheta, float costheta) :
-x(x), y(y), z(z), sinphi(sinphi), cosphi(cosphi), sintheta(sintheta), costheta(costheta)
+Mesh::Vertex::Vertex(float x, float y, float z, float nx, float ny, float nz)
+: x(x), y(y), z(z), nx(nx), ny(ny), nz(nz)
 {
 }
 
@@ -21,28 +22,45 @@ void Mesh::Vertex::Rotate(float angle, Axis axis)
             {
                 float _y = _cos * y - _sin * z;
                 float _z = _sin * y + _cos * z;
+                float _ny = _cos * y - _sin * z;
+                float _nz = _sin * y + _cos * z;
                 y = _y;
                 z = _z;
+                ny = _ny;
+                nz = _nz;
                 break;
             }
         case Axis::Y:
             {
                 float _x = _cos * x - _sin * z;
                 float _z = _sin * x + _cos * z;
+                float _nx = _cos * x - _sin * z;
+                float _nz = _sin * x + _cos * z;
                 x = _x;
                 z = _z;
+                nx = _nx;
+                nz = _nz;
                 break;
             }
         case Axis::Z:
             {
                 float _x =  _cos * x + _sin * y;
                 float _y = -_sin * x + _cos * y;
+                float _nx =  _cos * x + _sin * y;
+                float _ny = -_sin * x + _cos * y;
                 x = _x;
                 y = _y;
+                nx = _nx;
+                ny = _ny;
             }
         
             
     }
+}
+
+float Mesh::Vertex::ComputeIllumination(Light const& light)
+{
+    return (nx * light.x + ny * light.y + nz * light.z);
 }
 
 void Mesh::Vertex::Debug()
@@ -54,9 +72,9 @@ Mesh::Mesh(Settings& settings) : m_rotation{0.0f, 0.0f, 0.0f}, m_resolution(sett
 {
 }
 
-void Mesh::AddVertex(float x, float y, float z, float sinphi, float cosphi, float sintheta, float costheta)
+void Mesh::AddVertex(float x, float y, float z, float nx, float ny, float nz)
 {
-    m_vertices.emplace_back(x, y, z, sinphi, cosphi, sintheta, costheta);
+    m_vertices.emplace_back(x, y, z, nx, ny, nz);
 }
 
 void Mesh::AddVertex(Vertex v)
@@ -163,10 +181,26 @@ void Mesh::GenerateTorus(float majorRadius, float minorRadius)
             for (int k = 0; k < m_resolution; k++)
             {
                 
-                float x = (majorRadius + minorRadius * cos(minorR)) * cos(majorR);
-                float y = (majorRadius + minorRadius * sin(minorR)) * sin(majorR);
-                float z = minorR * sin(minorR);
-                AddVertex(x, y, z, sinphi, cosphi, sintheta, costheta);
+                float x = (majorRadius + minorRadius * cosphi) * costheta;
+                float y = (majorRadius + minorRadius * sinphi) * sintheta;
+                float z = minorR * sinphi;
+                
+                /* tangent vector with respect to big circle */
+                float tx = -sin(majorR);
+                float ty = cos(majorR);
+                float tz = 0;
+                /* tangent vector with respect to little circle */
+                float sx = cos(majorR)*(-sin(minorR));
+                float sy = sin(majorR)*(-sin(minorR));
+                float sz = cos(minorR);
+                /* normal is cross-product of tangents */
+                float nx = ty*sz - tz*sy;
+                float ny = tz*sx - tx*sz;
+                float nz = tx*sy - ty*sx;
+                /* normalize normal */
+                float length = sqrt(nx*nx + ny*ny + nz*nz);
+                
+                AddVertex(x, y, z, nx / length, ny / length, nz / length);
 
                 
             }

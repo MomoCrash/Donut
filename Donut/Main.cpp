@@ -1,6 +1,7 @@
 #include <process.h>
 #include <signal.h>
 
+#include "Light.h"
 #include "Mesh.h"
 #include "Screen.h"
 #include "Settings.h"
@@ -22,10 +23,11 @@ int main(int argc, char* argv[])
     Settings settings(argc, argv);
     
     Mesh mesh(settings);
-    mesh.GenerateTorus(10, 2);
+    mesh.GenerateTorus(15, 2);
+
+    Light light(-0.1, -0.1, -0.1);
     
     Screen screen(settings);
-
     while (end == 0)
     {
         screen.clear();
@@ -34,7 +36,7 @@ int main(int argc, char* argv[])
         mesh.Rotate(settings.getMeshRotationYPerFrame(), Mesh::Axis::Y);
         mesh.Rotate(settings.getMeshRotationZPerFrame(), Mesh::Axis::Z);
         
-        screen.display(mesh);
+        screen.display(mesh, light);
         screen.display();
 
         Sleep(settings.getFrameDuration());

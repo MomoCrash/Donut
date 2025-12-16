@@ -70,14 +70,11 @@ void Screen::setPosition(int x, int y)
     m_positionY = y;
 }
 
-void Screen::display(Mesh const& mesh)
+void Screen::display(Mesh const& mesh, Light const& light)
 {
 
     float meshPositonZ      = 2;
     float viewPositionZ     = 3.33f;
-
-    float cosA = cos(mesh.getRotation()[0]), sinA = sin(mesh.getRotation()[0]);
-    float cosB = cos(mesh.getRotation()[2]), sinB = sin(mesh.getRotation()[2]);
 
     for (Mesh::Vertex vertex : mesh.GetVertices())
     {
@@ -86,7 +83,7 @@ void Screen::display(Mesh const& mesh)
         float x_prime = (vertex.x  * viewPositionZ) / meshPositonZ;
 
         x_prime += m_positionX ;
-        y_prime += m_positionY;
+        y_prime += m_positionY/2.0f;
 
         y_prime /= 2.f;
 
@@ -97,8 +94,7 @@ void Screen::display(Mesh const& mesh)
 
         int index = m_width * v + u;
 
-        float L = vertex.cosphi*vertex.costheta*sinB - cosA*vertex.costheta*vertex.sinphi -
-sinA*vertex.sintheta + cosB*(cosA*vertex.sintheta - vertex.costheta*sinA*vertex.sinphi);
+        float L = vertex.ComputeIllumination(light);
         
         if (L <= 0) continue;
 
@@ -108,6 +104,9 @@ sinA*vertex.sintheta + cosB*(cosA*vertex.sintheta - vertex.costheta*sinA*vertex.
         if (index < 0 || index >= m_size) continue;
 
         int luminance_index = static_cast<int>(L * 8.f);
+
+        if (luminance_index > 8)
+            continue;
 
         m_pixels[index] = ".,-~:;=!*#$@"[luminance_index];
         m_oozBuffer[index] = ooz;
@@ -128,7 +127,7 @@ void Screen::display()
 
 void Screen::clear()
 {
-    std::cout << CONSOLE_BEGIN;
+    std::cout << CONSOLE_BEGIN << std::endl;
     for (int i = 0; i < m_size; ++i)
     {
         m_pixels[i]     = m_backgroundChar;
