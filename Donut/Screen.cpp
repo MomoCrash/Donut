@@ -77,10 +77,12 @@ void Screen::display(Mesh const& mesh, Light const& light)
     {
 
         Vertex newVertex = mesh.GetVertices()[i];
-        newVertex.x += mesh.getPositionX();
-        newVertex.y += mesh.getPositionY();
+
         _ProjectInCenterScreenSpace(mesh.getPositionZ(), newVertex);
         _ProjectInTopLeftScreenSpace(newVertex);
+        
+        newVertex.x += mesh.getPositionX();
+        newVertex.y += mesh.getPositionY();
         
         int u = static_cast<int>(round(newVertex.x));
         int v = static_cast<int>(round(newVertex.y));

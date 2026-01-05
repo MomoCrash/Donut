@@ -12,8 +12,10 @@ public:
     explicit Prism(float width, float height, float depth, Settings const& settings)
         : Mesh(settings)
     {
-        float side = 10;
-        float h = side * 0.5f;
+        float const halfWidth = width * 0.5f    + width ;
+        float const halfHeight = height * 0.5f  + height ;
+        float const halfDepth = depth * 0.5f    + depth ;
+        
         int faceSize = m_resolution * m_resolution;
         m_vertices.resize(6 * faceSize);
 
@@ -28,7 +30,7 @@ public:
                     Vertex& vert = m_vertices[index(0, faceSize, i, j)];
                     vert.x = u * width;
                     vert.y = v * height;
-                    vert.z = depth;
+                    vert.z = halfDepth;
                     vert.nx = 0; 
                     vert.ny = 0; 
                     vert.nz = 1;
@@ -39,7 +41,7 @@ public:
                     Vertex& vert = m_vertices[index(1, faceSize, i, j)];
                     vert.x = u * width;
                     vert.y = v * height;
-                    vert.z = -depth;
+                    vert.z = -halfDepth;
                     vert.nx = 0; 
                     vert.ny = 0; 
                     vert.nz = -1;
@@ -48,7 +50,7 @@ public:
                 // Droite
                 {
                     Vertex& vert = m_vertices[index(2, faceSize, i, j)];
-                    vert.x = width;
+                    vert.x = halfWidth;
                     vert.y = u * height;
                     vert.z = v * depth;
                     vert.nx = 1; 
@@ -59,7 +61,7 @@ public:
                 // Gauche
                 {
                     Vertex& vert = m_vertices[index(3, faceSize, i, j)];
-                    vert.x = -width;
+                    vert.x = -halfWidth;
                     vert.y = u * height;
                     vert.z = v * depth;
                     vert.nx = -1;
@@ -71,7 +73,7 @@ public:
                 {
                     Vertex& vert = m_vertices[index(4, faceSize, i, j)];
                     vert.x = u * width;
-                    vert.y = height;
+                    vert.y = halfHeight;
                     vert.z = v * depth;
                     vert.nx = 0; 
                     vert.ny = 1; 
@@ -82,7 +84,7 @@ public:
                 {
                     Vertex& vert = m_vertices[index(5, faceSize, i, j)];
                     vert.x = u * width;
-                    vert.y = -height;
+                    vert.y = -halfHeight;
                     vert.z = v * depth;
                     vert.nx = 0; 
                     vert.ny = -1; 

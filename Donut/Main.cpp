@@ -27,6 +27,7 @@ int main(int argc, char* argv[])
     Prism mesh(40, 40, 40, settings);
     mesh.setPosition(0, 0, -5);
     Torus torus(10, 5, settings);
+    torus.setPosition(0, 0, -10);
 
     Light light(settings);
     

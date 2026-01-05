@@ -40,7 +40,7 @@ private:
     
     float   m_lightDirectionX           = 0.00f;
     float   m_lightDirectionY           = 0.00f;
-    float   m_lightDirectionZ           = 10.00f;
+    float   m_lightDirectionZ           = 20.00f;
     
     int     m_frameDuration             = 100000;
 };
