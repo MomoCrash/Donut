@@ -73,43 +73,41 @@ void Screen::setPosition(int x, int y)
 void Screen::display(Mesh const& mesh, Light const& light)
 {
 
-    float meshPositonZ      = 2;
-    float viewPositionZ     = 3.33f;
-
-    for (Mesh::Vertex vertex : mesh.GetVertices())
+    for (int i = 0; i < mesh.GetVertices().size(); ++i)
     {
+
+        Vertex newVertex = mesh.GetVertices()[i];
+        newVertex.x += mesh.getPositionX();
+        newVertex.y += mesh.getPositionY();
+        _ProjectInCenterScreenSpace(mesh.getPositionZ(), newVertex);
+        _ProjectInTopLeftScreenSpace(newVertex);
         
-        float y_prime = (vertex.y  * viewPositionZ) / meshPositonZ;
-        float x_prime = (vertex.x  * viewPositionZ) / meshPositonZ;
-
-        x_prime += m_positionX ;
-        y_prime += m_positionY/2.0f;
-
-        y_prime /= 2.f;
-
-        int u = round(x_prime);
-        int v = round(y_prime);
+        int u = static_cast<int>(round(newVertex.x));
+        int v = static_cast<int>(round(newVertex.y));
 
         if (u < 0 || v < 0 || u >= m_width || v >= m_height) continue;
 
         int index = m_width * v + u;
-
-        float L = vertex.ComputeIllumination(light);
         
-        if (L <= 0) continue;
-
-        float ooz = 1.f / vertex.z;
-        
-        if (ooz < m_oozBuffer[index]) continue;
         if (index < 0 || index >= m_size) continue;
+        
+        float L = newVertex.ComputeIllumination(light);
+        float ooz = 1.f / newVertex.z;
 
-        int luminance_index = static_cast<int>(L * 8.f);
+        if (ooz <= m_oozBuffer[index]) continue;
 
-        if (luminance_index > 8)
-            continue;
+        if (L < 0)
+        {
+            m_oozBuffer[index] = ooz;
+            m_pixels[index] = '.';
+        } else
+        {
+            int luminance_index = static_cast<int>(L * 11.f);
 
-        m_pixels[index] = ".,-~:;=!*#$@"[luminance_index];
-        m_oozBuffer[index] = ooz;
+            m_oozBuffer[index] = ooz;
+            m_pixels[index] = ".,-~:;=!X#$@"[luminance_index];
+        }
+        
     }
     
 }
@@ -144,4 +142,22 @@ void Screen::setupConsole()
     SetConsoleMode(hConsole, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
 
     std::cout << CONSOLE_RESET << CURSOR_HIDE << std::endl;
+}
+
+void Screen::_ProjectInCenterScreenSpace(float const& z, Vertex& vertex)
+{
+    vertex.x = (vertex.x * m_viewPositionZ) / z;
+    vertex.y = (vertex.y * m_viewPositionZ) / z / 2.0f;
+    vertex.z += z;
+}
+
+void Screen::_ProjectInTopLeftScreenSpace(Vertex& vertex)
+{
+    vertex.x += m_width / 2;
+    vertex.y += m_height / 2;
+}
+
+bool Screen::_IsVertexInScreen(int u, int v)
+{
+    return u >= 0 && u < m_width && v >= 0 && v < m_height;
 }

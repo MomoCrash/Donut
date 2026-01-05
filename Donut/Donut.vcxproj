@@ -167,6 +167,13 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="shapes\Circle.h" />
+    <ClInclude Include="shapes\Cube.h" />
+    <ClInclude Include="shapes\HalfCircle.h" />
+    <ClInclude Include="shapes\Prism.h" />
+    <ClInclude Include="shapes\Rectangle.h" />
+    <ClInclude Include="shapes\Square.h" />
+    <ClInclude Include="shapes\Torus.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

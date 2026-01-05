@@ -5,6 +5,8 @@
 #include "Mesh.h"
 #include "Screen.h"
 #include "Settings.h"
+#include "shapes/Prism.h"
+#include "shapes/Torus.h"
 
 // Indicateur de fin de programme
 int end = 0;
@@ -22,10 +24,11 @@ int main(int argc, char* argv[])
     
     Settings settings(argc, argv);
     
-    Mesh mesh(settings);
-    mesh.GenerateTorus(15, 2);
+    Prism mesh(40, 40, 40, settings);
+    mesh.setPosition(0, 0, -5);
+    Torus torus(10, 5, settings);
 
-    Light light(-0.1, -0.1, -0.1);
+    Light light(settings);
     
     Screen screen(settings);
     while (end == 0)
@@ -35,7 +38,11 @@ int main(int argc, char* argv[])
         mesh.Rotate(settings.getMeshRotationXPerFrame(), Mesh::Axis::X);
         mesh.Rotate(settings.getMeshRotationYPerFrame(), Mesh::Axis::Y);
         mesh.Rotate(settings.getMeshRotationZPerFrame(), Mesh::Axis::Z);
-        
+
+        torus.Rotate(settings.getMeshRotationXPerFrame(), Mesh::Axis::X);
+        torus.Rotate(settings.getMeshRotationYPerFrame(), Mesh::Axis::Y);
+
+        screen.display(torus, light);
         screen.display(mesh, light);
         screen.display();
 

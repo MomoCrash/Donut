@@ -2,15 +2,14 @@
 
 #include <iostream>
 
-#include "defines.h"
 #include "Light.h"
 
-Mesh::Vertex::Vertex(float x, float y, float z, float nx, float ny, float nz)
+Vertex::Vertex(float x, float y, float z, float nx, float ny, float nz)
 : x(x), y(y), z(z), nx(nx), ny(ny), nz(nz)
 {
 }
 
-void Mesh::Vertex::Rotate(float angle, Axis axis)
+void Vertex::Rotate(float angle, Mesh::Axis axis)
 {
 
     float _cos = cos(angle);
@@ -18,57 +17,55 @@ void Mesh::Vertex::Rotate(float angle, Axis axis)
 
     switch (axis)
     {
-        case Axis::X:
+        case Mesh::Axis::X:
             {
-                float _y = _cos * y - _sin * z;
-                float _z = _sin * y + _cos * z;
-                float _ny = _cos * y - _sin * z;
-                float _nz = _sin * y + _cos * z;
+                float _y =  _cos * y - _sin * z;
+                float _z =  _sin * y + _cos * z;
+                float _ny = _cos * ny - _sin * nz;
+                float _nz = _sin * ny + _cos * nz;
                 y = _y;
                 z = _z;
                 ny = _ny;
                 nz = _nz;
                 break;
             }
-        case Axis::Y:
+        case Mesh::Axis::Y:
             {
-                float _x = _cos * x - _sin * z;
-                float _z = _sin * x + _cos * z;
-                float _nx = _cos * x - _sin * z;
-                float _nz = _sin * x + _cos * z;
+                float _x =  _cos * x - _sin * z;
+                float _z =  _sin * x + _cos * z;
+                float _nx = _cos * nx - _sin * nz;
+                float _nz = _sin * nx + _cos * nz;
                 x = _x;
                 z = _z;
                 nx = _nx;
                 nz = _nz;
                 break;
             }
-        case Axis::Z:
+        case Mesh::Axis::Z:
             {
                 float _x =  _cos * x + _sin * y;
-                float _y = -_sin * x + _cos * y;
-                float _nx =  _cos * x + _sin * y;
-                float _ny = -_sin * x + _cos * y;
+                float _y =  -_sin * x + _cos * y;
+                float _nx = _cos * nx + _sin * ny;
+                float _ny = -_sin * nx + _cos * ny;
                 x = _x;
                 y = _y;
                 nx = _nx;
                 ny = _ny;
             }
-        
-            
     }
 }
 
-float Mesh::Vertex::ComputeIllumination(Light const& light)
+float Vertex::ComputeIllumination(Light const& light)
 {
-    return (nx * light.x + ny * light.y + nz * light.z);
+    return nx*light.GetNormalizedLight().nx + ny*light.GetNormalizedLight().ny + nz*light.GetNormalizedLight().nz; 
 }
 
-void Mesh::Vertex::Debug()
+void Vertex::Debug() const
 {
     std::cout << "x:" << x << ", y:" << y << ", z:" << z << std::endl;
 }
 
-Mesh::Mesh(Settings& settings) : m_rotation{0.0f, 0.0f, 0.0f}, m_resolution(settings.getResolution())
+Mesh::Mesh(Settings const& settings) : m_rotation{0.0f, 0.0f, 0.0f}, m_resolution(settings.getResolution())
 {
 }
 
@@ -82,7 +79,7 @@ void Mesh::AddVertex(Vertex v)
     m_vertices.emplace_back(v);
 }
 
-std::vector<Mesh::Vertex> const& Mesh::GetVertices() const
+std::vector<Vertex> const& Mesh::GetVertices() const
 {
     return m_vertices;
 }
@@ -122,93 +119,14 @@ void Mesh::Debug()
     }
 }
 
-void Mesh::GenerateCircle(float radius, float angle)
-{
-    
-    m_vertices.resize(m_resolution * m_resolution);
-    for(int i = 0; i < m_resolution; i++)
-    {
-        float r = (radius * i) / (m_resolution - 1);
-        for(int j = 0; j < m_resolution; j++)
-        {
-            float theta = (angle * j) / (m_resolution - 1);
-            m_vertices[m_resolution * i + j].x = r * std::cos(theta);
-            m_vertices[m_resolution * i + j].y = r * std::sin(theta);
-            m_vertices[m_resolution * i + j].z = 0.f;
-        }
-    }
-    
-}
-
-void Mesh::GenerateHalfCircle(float radius)
-{
-    GenerateCircle(radius, PI);
-    
-}
-
-void Mesh::GenerateRectangle(float width, float height)
-{
-    m_vertices.resize(m_resolution * m_resolution);
-    for(int i = 0; i < m_resolution; i++)
-    {
-        for(int j = 0; j < m_resolution; j++)
-        {
-            m_vertices[m_resolution * i + j].x = (1.f*i / (m_resolution - 1) - 0.5f) * width;
-            m_vertices[m_resolution * i + j].y = (1.f*j / (m_resolution - 1) - 0.5f) * height;
-            m_vertices[m_resolution * i + j].z = 0.f;
-        }
-    }
-}
-
-void Mesh::GenerateSquare(float size)
-{
-    GenerateRectangle(size, size);
-}
-
-void Mesh::GenerateTorus(float majorRadius, float minorRadius)
-{
-    
-    for (float i = 0; i < m_resolution; i++)
-    {
-        float majorR = (2.f*PI * i)/((float)m_resolution-1);
-        float costheta = cos(majorR), sintheta = sin(majorR);
-        
-        for (int j = 0; j < m_resolution; j++)
-        {
-            float minorR = PI - (2.0f*PI * j) / ((float)m_resolution - 1);
-            float cosphi = cos(minorR), sinphi = sin(minorR);
-            
-            for (int k = 0; k < m_resolution; k++)
-            {
-                
-                float x = (majorRadius + minorRadius * cosphi) * costheta;
-                float y = (majorRadius + minorRadius * sinphi) * sintheta;
-                float z = minorR * sinphi;
-                
-                /* tangent vector with respect to big circle */
-                float tx = -sin(majorR);
-                float ty = cos(majorR);
-                float tz = 0;
-                /* tangent vector with respect to little circle */
-                float sx = cos(majorR)*(-sin(minorR));
-                float sy = sin(majorR)*(-sin(minorR));
-                float sz = cos(minorR);
-                /* normal is cross-product of tangents */
-                float nx = ty*sz - tz*sy;
-                float ny = tz*sx - tx*sz;
-                float nz = tx*sy - ty*sx;
-                /* normalize normal */
-                float length = sqrt(nx*nx + ny*ny + nz*nz);
-                
-                AddVertex(x, y, z, nx / length, ny / length, nz / length);
-
-                
-            }
-        }
-    }
-}
-
 float const* Mesh::getRotation() const
 {
     return m_rotation;
+}
+
+void Mesh::setPosition(float _x, float _y, float _z)
+{
+    x = _x;
+    y = _y;
+    z = _z;
 }

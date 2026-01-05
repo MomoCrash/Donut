@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <string>
 
 #include "defines.h"
 
@@ -59,6 +60,21 @@ Settings::Settings(int argc, char* argv[]) : m_width(DEFAULT_WIDTH), m_height(DE
             i++;
             m_frameDuration = atoi(argv[i]);
         }
+        if (strcmp(argv[i], "-lx") == 0 && i + 1 < argc)
+        {
+            m_lightDirectionX = std::atof(argv[i+1]);
+            i++;
+        }
+        if (strcmp(argv[i], "-ly") == 0 && i + 1 < argc)
+        {
+            m_lightDirectionY = std::atof(argv[i+1]);
+            i++;
+        }
+        if (strcmp(argv[i], "-lz") == 0&& i + 1 < argc)
+        {
+            m_lightDirectionZ = std::atof(argv[i+1]);
+            i++;
+        }
     }
 }
 
@@ -105,6 +121,21 @@ float Settings::getMeshRotationYPerFrame() const
 float Settings::getMeshRotationZPerFrame() const
 {
     return m_meshRotationZPerFrame;
+}
+
+float Settings::getLightDirectionX() const
+{
+    return m_lightDirectionX;
+}
+
+float Settings::getLightDirectionY() const
+{
+    return m_lightDirectionY;
+}
+
+float Settings::getLightDirectionZ() const
+{
+    return m_lightDirectionZ;
 }
 
 int Settings::getFrameDuration() const
